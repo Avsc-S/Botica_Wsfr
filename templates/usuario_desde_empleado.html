@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Crear usuario{% endblock %}
+
+{% block content %}
+<h3>Crear usuario para {{ empleado.Nombres }} {{ empleado.Apellidos }}</h3>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="POST">
+    <div class="mb-3">
+        <label>Usuario</label>
+        <input name="username" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input name="email" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Rol</label>
+        <select name="id_role" class="form-select" required>
+            {% for r in roles %}
+            <option value="{{ r.Id_Role }}">{{ r.Nom_Role }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Contraseña</label>
+        <input type="password" name="password" class="form-control" required>
+    </div>
+
+    <button class="btn btn-primary">Crear usuario</button>
+    <a href="/empleados" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

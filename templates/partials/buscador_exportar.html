@@ -1,0 +1,66 @@
+{# --------------------------------------------------
+   Partial Buscador + Acciones (layout estilo Usuarios)
+-------------------------------------------------- #}
+
+<div class="mb-3">
+
+    {# FILA SUPERIOR: BOTONES #}
+    <div class="d-flex gap-2 mb-3">
+        <a href="{{ url_nuevo }}" class="btn btn-primary">
+            {{ texto_nuevo or "Nuevo" }}
+        </a>
+
+        <a href="{{ url_exportar }}" class="btn btn-success">
+            Exportar a Excel
+        </a>
+    </div>
+
+    {# FILA INFERIOR: BUSCADOR #}
+    <form method="GET" class="row g-2 align-items-center">
+
+        <div class="col-md-6">
+            <input type="text"
+                   name="q"
+                   value="{{ request.args.get('q','') }}"
+                   class="form-control"
+                   placeholder="{{ placeholder }}">
+        </div>
+
+        <div class="col-md-3">
+            <select name="filtro" class="form-select">
+                <option value="dni"
+                    {% if request.args.get('filtro','dni') == 'dni' %}selected{% endif %}>
+                    DNI
+                </option>
+                <option value="nombres"
+                    {% if request.args.get('filtro') == 'nombres' %}selected{% endif %}>
+                    Nombres
+                </option>
+                <option value="apellidos"
+                    {% if request.args.get('filtro') == 'apellidos' %}selected{% endif %}>
+                    Apellidos
+                </option>
+                <option value="email"
+                    {% if request.args.get('filtro') == 'email' %}selected{% endif %}>
+                    Email
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-primary">
+                Buscar
+            </button>
+        </div>
+
+        {% if request.args %}
+        <div class="col-md-1 d-grid">
+            <a href="{{ url_volver }}" class="btn btn-secondary">
+                Limpiar
+            </a>
+        </div>
+        {% endif %}
+
+    </form>
+</div>
+

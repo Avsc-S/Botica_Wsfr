@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% set role = role %}
+
+{% block title %}Panel Principal{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Bienvenido, {{ username }}</h2>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <h5><i class="fa-solid fa-cash-register"></i> Ventas del día</h5>
+            <h2 class="text-primary mt-2">0</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <h5><i class="fa-solid fa-box"></i> Productos con bajo stock</h5>
+            <h2 class="text-danger mt-2">0</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+            <h5><i class="fa-solid fa-truck"></i> Compras recientes</h5>
+            <h2 class="text-success mt-2">0</h2>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Roles{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Roles del sistema</h2>
+
+<a href="/roles/nuevo" class="btn btn-primary mb-3">Nuevo rol</a>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre rol</th>
+            <th>Descripción</th>
+            <th style="width:150px;">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in roles %}
+        <tr>
+            <td>{{ r.Id_Role }}</td>
+            <td>{{ r.Nom_Role }}</td>
+            <td>{{ r.Descripcion }}</td>
+            <td>
+                <a href="/roles/{{ r.Id_Role }}/editar" class="btn btn-sm btn-warning">Editar</a>
+
+                <form action="/roles/{{ r.Id_Role }}/eliminar" method="POST"
+                      style="display:inline-block;"
+                      onsubmit="return confirm('¿Eliminar este rol?');">
+                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

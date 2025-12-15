@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Empleados{% endblock %}
+
+{% block content %}
+
+{% include "partials/buscador_exportar.html" with context %}
+
+{# -------------------------------
+   Tabla de empleados
+-------------------------------- #}
+<table class="table table-striped table-bordered align-middle">
+    <thead>
+        <tr>
+            <th style="width:50px;">ID</th>
+            <th style="width:90px;">DNI</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th style="width:90px;">Teléfono</th>
+            <th>Dirección</th>
+            <th>Estado</th>
+            <th style="width:260px;">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for e in empleados %}
+        <tr>
+            <td>{{ e.Id_Personal }}</td>
+            <td>{{ e.DNI }}</td>
+            <td>{{ e.Nombres }}</td>
+            <td>{{ e.Apellidos }}</td>
+            <td>{{ e.Telefono or '' }}</td>
+            <td>{{ e.Direccion or '' }}</td>
+
+            <td>
+                {% if e.Activo == 1 %}
+                    <span class="badge bg-success">Activo</span>
+                {% else %}
+                    <span class="badge bg-secondary">Inactivo</span>
+                {% endif %}
+            </td>
+
+            <td class="d-flex align-items-center gap-1">
+
+                {# EDITAR #}
+                {% if e.Activo == 1 %}
+                    <a href="/empleados/{{ e.Id_Personal }}/editar"
+                       class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
+                {% else %}
+                    <button class="btn btn-warning btn-sm" disabled>
+                        Editar
+                    </button>
+                {% endif %}
+
+                {# ACTIVAR / DESACTIVAR #}
+                <form method="POST"
+                      action="{{ url_for('empleado_cambiar_estado', id=e.Id_Personal) }}"
+                      class="m-0 p-0">
+                    {% if e.Activo == 1 %}
+                        <button class="btn btn-sm btn-outline-danger">
+                            Desactivar
+                        </button>
+                    {% else %}
+                        <button class="btn btn-sm btn-outline-success">
+                            Activar
+                        </button>
+                    {% endif %}
+                </form>
+
+                {# USUARIO DEL SISTEMA #}
+                {% if e.Activo == 1 %}
+                    {% if not e.usuario %}
+                        <a href="/empleados/{{ e.Id_Personal }}/crear-usuario"
+                           class="btn btn-sm btn-primary">
+                            Crear usuario
+                        </a>
+                    {% else %}
+                        <span class="badge bg-success">
+                            Usuario creado
+                        </span>
+                    {% endif %}
+                {% else %}
+                    <span class="badge bg-warning text-dark">
+                        Empleado inactivo
+                    </span>
+                {% endif %}
+
+                {# ELIMINAR (SEGURIDAD) #}
+                {% if not e.usuario and e.Activo == 0 %}
+                <form method="POST"
+                      action="/empleados/{{ e.Id_Personal }}/eliminar"
+                      onsubmit="return confirm('⚠️ Eliminación PERMANENTE.\n¿Desea continuar?')">
+                    <button class="btn btn-danger btn-sm">
+                        Eliminar
+                    </button>
+                </form>
+                {% endif %}
+
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+

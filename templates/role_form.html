@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% if modo == 'nuevo' %}
+    {% set page_title = 'Nuevo rol' %}
+{% else %}
+    {% set page_title = 'Editar rol' %}
+{% endif %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">{{ page_title }}</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+        <label>Nombre del rol</label>
+        <input type="text" name="nombre" class="form-control"
+               value="{{ rol.Nom_Role if rol else '' }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Descripción</label>
+        <textarea name="descripcion" class="form-control" rows="3">{{ rol.Descripcion if rol else '' }}</textarea>
+    </div>
+
+    <button class="btn btn-primary">Guardar</button>
+    <a href="/roles" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

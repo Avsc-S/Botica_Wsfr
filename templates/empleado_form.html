@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo empleado{% endblock %}
+
+{% block content %}
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
+
+<h2 class="mb-4">{{ "Nuevo empleado" if modo == "nuevo" else "Editar empleado" }}</h2>
+
+<form method="POST" class="row g-3">
+
+    <div class="col-md-4">
+        <label>DNI</label>
+        <input name="dni" 
+            class="form-control" 
+            required 
+            pattern="\d{8}" 
+            maxlength="8"
+            title="El DNI debe tener exactamente 8 dígitos">
+
+    </div>
+
+    <div class="col-md-4">
+        <label>Nombres</label>
+        <input name="nombres" class="form-control" required>
+    </div>
+
+    <div class="col-md-4">
+        <label>Apellidos</label>
+        <input name="apellidos" class="form-control" required>
+    </div>
+
+    <div class="col-md-4">
+        <label>Fecha de nacimiento</label>
+        <input type="date" name="fecha_nac" class="form-control">
+    </div>
+
+    <div class="col-md-4">
+        <label>Teléfono</label>
+        <input name="telefono" class="form-control">
+    </div>
+
+    <div class="col-md-4">
+        <label>Email personal</label>
+        <input type="email" 
+            name="email_personal" 
+            class="form-control"
+            placeholder="correo@ejemplo.com"
+            title="Ingrese un correo válido">
+
+    </div>
+
+    <div class="col-md-6">
+        <label>Dirección</label>
+        <input name="direccion" class="form-control">
+    </div>
+
+    <div class="col-md-3">
+        <label>País</label>
+            <select id="pais" name="id_pais" class="form-select">
+            <option value="">Seleccione...</option>
+                {% for p in paises %}
+            <option value="{{ p.Id_Pais }}">{{ p.Nom_Pais }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label>Departamento</label>
+            <select id="departamento" name="id_departamento" class="form-select">
+                <option value="">Seleccione país...</option>
+            </select>
+    </div>
+
+    <div class="col-md-3">
+        <label>Provincia</label>
+        <select id="provincia" name="id_provincia" class="form-select">
+            <option value="">Seleccione departamento...</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label>Distrito</label>
+        <select id="distrito" name="id_distrito" class="form-select">
+            <option value="">Seleccione provincia...</option>
+        </select>
+    </div>
+
+
+    <div class="col-md-3">
+        <label>Fecha de ingreso</label>
+        <input type="date" 
+            name="fecha_ingreso" 
+            class="form-control"
+            value="{{ fecha_hoy }}">
+
+    </div>
+
+    <div class="col-12 mt-3">
+        <button class="btn btn-primary">Guardar</button>
+        <a href="/empleados" class="btn btn-secondary">Cancelar</a>
+    </div>
+
+</form>
+
+<!-- 👇 AQUÍ VA EL JAVASCRIPT -->
+
+<script>
+document.getElementById("pais").addEventListener("change", function () {
+    const paisId = this.value;
+    const depSelect = document.getElementById("departamento");
+    const provSelect = document.getElementById("provincia");
+    const distSelect = document.getElementById("distrito");
+
+    depSelect.innerHTML = '<option value="">Cargando...</option>';
+    provSelect.innerHTML = '<option value="">Seleccione departamento...</option>';
+    distSelect.innerHTML = '<option value="">Seleccione provincia...</option>';
+
+    if (!paisId) return;
+
+    fetch(`/api/departamentos/${paisId}`)
+        .then(res => res.json())
+        .then(data => {
+            depSelect.innerHTML = '<option value="">Seleccione...</option>';
+            data.forEach(d => {
+                depSelect.innerHTML += `<option value="${d.id}">${d.nombre}</option>`;
+            });
+        });
+});
+
+
+document.getElementById("departamento").addEventListener("change", function () {
+    const depId = this.value;
+    const provSelect = document.getElementById("provincia");
+    const distSelect = document.getElementById("distrito");
+
+    provSelect.innerHTML = '<option value="">Cargando...</option>';
+    distSelect.innerHTML = '<option value="">Seleccione provincia...</option>';
+
+    if (!depId) return;
+
+    fetch(`/api/provincias/${depId}`)
+        .then(res => res.json())
+        .then(data => {
+            provSelect.innerHTML = '<option value="">Seleccione...</option>';
+            data.forEach(p => {
+                provSelect.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+            });
+        });
+});
+
+
+document.getElementById("provincia").addEventListener("change", function () {
+    const provId = this.value;
+    const distSelect = document.getElementById("distrito");
+
+    distSelect.innerHTML = '<option value="">Cargando...</option>';
+
+    if (!provId) return;
+
+    fetch(`/api/distritos/${provId}`)
+        .then(res => res.json())
+        .then(data => {
+            distSelect.innerHTML = '<option value="">Seleccione...</option>';
+            data.forEach(d => {
+                distSelect.innerHTML += `<option value="${d.id}">${d.nombre}</option>`;
+            });
+        });
+});
+</script>
+
+{% endblock %}
+

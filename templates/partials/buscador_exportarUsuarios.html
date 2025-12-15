@@ -1,0 +1,92 @@
+<!-- 🔒 Autofill trap (evita que el navegador precargue datos) -->
+<input type="text" name="fake_user" style="display:none">
+<input type="password" name="fake_pass" style="display:none">
+
+<!-- FILA 1 -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label>Usuario</label>
+        <input type="text"
+            name="usr_codigo"
+            class="form-control"
+            autocomplete="off"
+            required
+            {% if modo == 'nuevo' %}autofocus{% endif %}
+            value="{% if modo == 'editar' %}{{ usuario.Username }}{% endif %}">
+    </div>
+
+    <div class="col-md-6">
+        <label>Email</label>
+        <input type="email"
+            name="usr_email"
+            class="form-control"
+            autocomplete="off"
+            required
+            value="{{ usuario.Email_Acceso if usuario else '' }}">
+    </div>
+</div>
+
+<!-- FILA 2 -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label>Fecha de alta</label>
+
+        {% if modo == 'nuevo' %}
+            <input type="date"
+                name="fecha_alta"
+                class="form-control"
+                value="{{ fecha_hoy }}"
+                required>
+        {% else %}
+            <input type="date"
+                name="fecha_alta"
+                class="form-control"
+                value="{% if usuario.Fecha_Alta %}{{ usuario.Fecha_Alta }}{% else %}{{ fecha_hoy }}{% endif %}"
+                readonly>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6">
+        <label>Empleado asociado</label>
+        <select name="id_personal" class="form-control">
+            <option value="">-- Sin empleado --</option>
+            {% for p in empleados %}
+            <option value="{{ p.Id_Personal }}"
+                {% if usuario and usuario.Id_Personal == p.Id_Personal %}selected{% endif %}>
+                {{ p.Nombres }} {{ p.Apellidos }} ({{ p.DNI }})
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<!-- FILA 3 -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <label>Rol</label>
+        <select name="id_role" class="form-control" required>
+            <option value="">-- Sin rol --</option>
+            {% for r in roles %}
+            <option value="{{ r.Id_Role }}"
+                {% if usuario and usuario.Id_Role == r.Id_Role %}selected{% endif %}>
+                {{ r.Nom_Role }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-6">
+        <label>
+            {% if modo == 'nuevo' %}
+                Contraseña
+            {% else %}
+                Nueva contraseña (opcional)
+            {% endif %}
+        </label>
+        <input type="password"
+            name="usr_clave"
+            class="form-control"
+            autocomplete="new-password"
+            {% if modo == 'nuevo' %}required{% endif %}>
+    </div>
+</div>

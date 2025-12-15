@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Botica_WSFR{% endblock %}</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f4f6f9;
+            font-family: Arial;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: #0d6efd;
+            color: white;
+            padding-top: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h4 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            border-radius: 8px;
+            margin: 5px 10px;
+            font-size: 15px;
+        }
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Topbar */
+        .topbar {
+            width: 100%;
+            height: 60px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+        }
+
+        .content {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .username-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4>🧪 Botica WSFR</h4>
+
+        <!-- Todos pueden ver Inicio -->
+        <a href="/panel">
+            <i class="fa-solid fa-house"></i> Inicio
+        </a>
+
+        <!-- SOLO Administrador y Vendedor -->
+        {% if role in ["Administrador", "Vendedor"] %}
+        <a href="#">
+            <i class="fa-solid fa-cash-register"></i> Ventas
+        </a>
+        {% endif %}
+
+        <!-- SOLO Administrador y Comprador -->
+        {% if role in ["Administrador", "Comprador"] %}
+        <a href="#">
+            <i class="fa-solid fa-boxes-packing"></i> Compras
+        </a>
+        {% endif %}
+
+        <!-- SOLO Administrador y Almacenero -->
+        {% if role in ["Administrador", "Almacenero"] %}
+        <a href="#">
+            <i class="fa-solid fa-pills"></i> Productos
+        </a>
+        {% endif %}
+
+        <!-- SOLO Administrador -->
+        {% if role == "Administrador" %}
+        <a href="/usuarios">
+            <i class="fa-solid fa-users"></i> Usuarios
+        </a>
+
+        <a href="/roles">
+            <i class="fa-solid fa-shield-halved"></i> Roles y permisos
+        </a>
+        <a href="/empleados">
+            <i class="fa-solid fa-id-card"></i> Empleados
+        </a>
+        {% endif %}
+
+
+        <!-- TODOS PUEDEN VER REPORTES -->
+        <a href="#">
+            <i class="fa-solid fa-chart-line"></i> Reportes
+        </a>
+
+        <!-- Cierre de sesión -->
+        <a href="/logout" style="margin-top:auto; color:#ffdddd;">
+            <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+        </a>
+    </div>
+
+
+    <!-- Content -->
+    <div class="content">
+        
+        <!-- Topbar -->
+        <div class="topbar">
+            <div>
+                <strong>Panel Principal</strong>
+            </div>
+
+            <div class="username-label">
+                👤 {{ username }}
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div style="padding: 25px;">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+    </div>
+
+</body>
+</html>

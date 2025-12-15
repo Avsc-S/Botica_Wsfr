@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Botica WSFR</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        .login-card {
+            width: 380px;
+            padding: 35px;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-title {
+            font-weight: 600;
+            font-size: 26px;
+            color: white;
+            text-align: center;
+        }
+
+        .login-subtitle {
+            font-size: 16px;
+            color: #f1f1f1;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            color: white;
+            font-weight: 400;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+        }
+
+        .form-control::placeholder {
+            color: #e9e9e9;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 5px rgba(255,255,255,0.6);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            background: #0066ff;
+            border: none;
+            font-weight: 600;
+            color: white;
+        }
+
+        .btn-login:hover {
+            background: #0051cc;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+
+    <div class="login-title">Botica WSFR</div>
+    <div class="login-subtitle">Acceso al sistema</div>
+
+    {% if error %}
+        <div class="alert alert-danger py-2">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" autocomplete="off">
+        <!-- Usuario -->
+        <label>Usuario</label>
+        <input type="text"
+            name="user_name"
+            class="form-control"
+            placeholder="Ingrese su usuario"
+            autocomplete="new-username"
+            value="{{ username if username is defined else '' }}"
+            {% if foco == 'usuario' %}autofocus{% endif %}>
+
+        <!-- Contraseña con input-group -->
+        <label>Contraseña</label>
+        <div class="input-group mb-4">
+            <input type="password"
+                id="user_pass"
+                name="user_pass"
+                class="form-control"
+                placeholder="Ingrese su contraseña"
+                autocomplete="new-password"
+                {% if foco == 'password' %}autofocus{% endif %}>
+
+            <button class="btn btn-outline-light" type="button" id="togglePassword">
+                👁️
+            </button>
+        </div>
+        <button type="submit" class="btn-login">Ingresar</button>
+    </form>
+
+</div>
+
+<!-- Toggle Password -->
+<script>
+document.getElementById('togglePassword').addEventListener('click', function () {
+    const password = document.getElementById('user_pass');
+    const isHidden = password.type === "password";
+
+    password.type = isHidden ? "text" : "password";
+    this.textContent = isHidden ? "🙈" : "👁️";
+});
+</script>
+
+</body>
+</html>

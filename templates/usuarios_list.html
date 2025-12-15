@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Usuarios del sistema</h2>
+
+<div class="d-flex align-items-center gap-2 mb-3">
+    <a href="/usuarios/nuevo" class="btn btn-primary">
+        Nuevo usuario
+    </a>
+
+    <a href="/usuarios/exportar?q={{ q }}&campo={{ campo }}"
+        class="btn btn-success">
+        📥 Exportar a Excel
+    </a>
+
+</div>
+
+<form method="GET" action="/usuarios" class="row g-2 mb-3">
+
+    <!-- Campo de texto -->
+    <div class="col-md-6">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="Ingrese criterio de búsqueda"
+               value="{{ q }}">
+    </div>
+
+    <!-- Selector de campo -->
+    <div class="col-md-3">
+        <select name="campo" class="form-select">
+            <option value="usuario" {% if campo == 'usuario' %}selected{% endif %}>
+                Usuario
+            </option>
+            <option value="rol" {% if campo == 'rol' %}selected{% endif %}>
+                Rol
+            </option>
+            <option value="empleado" {% if campo == 'empleado' %}selected{% endif %}>
+                Empleado
+            </option>
+        </select>
+    </div>
+
+    <!-- Botón buscar -->
+    <div class="col-md-1 d-grid">
+        <button class="btn btn-primary">Buscar</button>
+    </div>
+
+    <!-- Botón limpiar -->
+    {% if q %}
+    <div class="col-md-2 d-grid">
+        <a href="/usuarios" class="btn btn-secondary">Limpiar</a>
+    </div>
+    {% endif %}
+
+</form>
+
+
+<table class="table table-striped table-bordered align-middle">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Empleado</th>
+            <th>Bloqueado</th>
+            <th style="width: 180px;">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in usuarios %}
+        <tr>
+            <td>{{ u.Id_User }}</td>
+            <td>{{ u.Username }}</td>
+            <td>{{ u.Email_Acceso }}</td>
+            <td>
+                {{ u.rol.Nom_Role if u.rol else 'Sin rol' }}
+            </td>
+            <td>
+                {% if u.Activo == 1 %}
+                    <span class="badge bg-success">Activo</span>
+                {% else %}
+                    <span class="badge bg-secondary">Inactivo</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if u.personal %}
+                {{ u.personal.Nombres }} {{ u.personal.Apellidos }}
+                {% else %}
+                    <span class="text-muted">Sin empleado</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if u.Bloqueado == 1 %}
+                <span class="badge bg-danger">
+                    🔒 Bloqueado
+                </span>
+                {% else %}
+                <span class="badge bg-success">
+                    🔓 Normal
+                </span>
+                {% endif %}
+            </td>
+
+            <td class="text-nowrap">
+                {% if u.Activo == 1 %}
+                <!-- Usuario ACTIVO: puede editar -->
+                <a href="/usuarios/{{ u.Id_User }}/editar"
+                    class="btn btn-warning btn-sm">
+                    Editar
+                </a>
+                
+                {% else %}
+                <!-- Usuario INACTIVO: NO puede editar -->
+                <button class="btn btn-warning btn-sm" disabled>
+                    Editar
+                </button>
+                {% endif %}
+
+
+                <!-- DESACTIVAR -->
+                <form method="POST"
+                    action="/usuarios/{{ u.Id_User }}/toggle"
+                    style="display:inline-block">
+
+                    {% if u.Activo == 1 %}
+                        <!-- Usuario ACTIVO -->
+                        <button class="btn btn-outline-danger btn-sm">
+                            Desactivar
+                        </button>
+                    {% else %}
+                        <!-- Usuario INACTIVO -->
+                        <button class="btn btn-outline-success btn-sm">
+                            Activar
+                        </button>
+                    {% endif %}
+
+                </form>
+
+                <!-- ELIMINAR (solo admins, no self) -->
+                {% if u.Id_User != session['user_id'] %}
+                <form method="POST"
+                    action="/usuarios/{{ u.Id_User }}/eliminar"
+                    style="display:inline-block;"
+                    onsubmit="return confirm('⚠️ Eliminación PERMANENTE.\n¿Desea continuar?')">
+                    <button class="btn btn-danger btn-sm">
+                        Eliminar
+                    </button>
+                </form>
+                {% endif %}
+               
+                {% if u.Bloqueado == 1 %}
+                    <span class="badge bg-danger">Bloqueado</span>
+                {% else %}
+                    <span class="badge bg-success">Normal</span>
+                {% endif %}
+
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
