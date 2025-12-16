@@ -8,6 +8,11 @@ from services.usuario_service import sincronizar_usuario_con_empleado
 
 app = Flask(__name__)
 
+# 🔹 Inicializar BD automáticamente si no existe
+from database import init_db_if_not_exists
+init_db_if_not_exists()
+
+
 # Configuración de la base de datos SQLite
 import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
