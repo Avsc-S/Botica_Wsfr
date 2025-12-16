@@ -56,8 +56,13 @@ CREATE TABLE Tbl_Users (
     Email_Acceso TEXT,
     Password_Hash TEXT NOT NULL,
     Activo INTEGER DEFAULT 1,
+    Intentos_Fallidos INTEGER DEFAULT 0,
+    Bloqueado INTEGER DEFAULT 0,
+    Fecha_Alta DATE,
     Id_Personal INTEGER,
-    FOREIGN KEY (Id_Personal) REFERENCES Tbl_Personal(Id_Personal)
+    Id_Role INTEGER,
+    FOREIGN KEY (Id_Personal) REFERENCES Tbl_Personal(Id_Personal),
+    FOREIGN KEY (Id_Role) REFERENCES Tbl_Roles(Id_Role)
 );
 
 CREATE TABLE Tbl_Roles (
